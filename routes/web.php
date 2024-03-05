@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\RoleController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -27,8 +28,6 @@ Route::post("adminlogin",[AdminController::class,'adminlogin'])->name('adminlogi
 
 
 Route::middleware(['auth'])->prefix('admin')->group(function () {
-
     Route::get("/dashboard",[AdminController::class,'dashboard'])->name('admin.dashboard');
-
-    // Other admin routes...
+    Route::resource('roles', RoleController::class);
 });
