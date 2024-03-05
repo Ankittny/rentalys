@@ -16,6 +16,7 @@
 		 <link href="{{asset("admin")}}/assets/vendor/owl-carousel/owl.carousel.css" rel="stylesheet" type="text/css"/>
 		 <link href="{{asset("admin")}}/assets/vendor/bootstrap-select/dist/css/bootstrap-select.min.css" rel="stylesheet" type="text/css"/>
 		 <link href="{{asset("admin")}}/assets/css/style.css" rel="stylesheet" type="text/css"/>
+		 <link href="{{asset("admin")}}/assets/css/customemodal.css" rel="stylesheet" type="text/css"/>
 
 </head>
 <body>

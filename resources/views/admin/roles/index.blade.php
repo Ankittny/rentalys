@@ -1,88 +1,112 @@
 @include('admin.common.header')
 @include('admin.common.sidebar')
 <!--**********************************
-	Content body start
+ Content body start
 ***********************************-->
 <div class="content-body">
-	<div class="container-fluid">
+    <div class="container-fluid">
 
-		<div class="row">
-			<div class="col-xl-12">
+        <div class="row">
+            <div class="col-xl-12">
 
-				<div class="mb-3">
-					<a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#basicModal" class="btn btn-primary btn-sm">Add Rols</a>
-				</div>
-				<div class="filter cm-content-box box-primary">
-					<div class="content-title SlideToolHeader">
-						<div class="cpa">
-							<i class="fa-solid fa-file-lines me-1"></i>Rols List
-						</div>
-					</div>
-					<div class="cm-content-body form excerpt">
-						<div class="card-body pb-4">
-							<div class="table-responsive">
-								<table class="table">
-									<thead>
-										<tr>
-											<th>S.No</th>
-											<th>Title</th>
-											<th>Status</th>
-											<th>Actions</th>
-										</tr>
-									</thead>
-									<tbody>
-                                       @if($roles->count() > 0)
-                                        @foreach($roles as $item)
-										<tr>
-											<td>{{++$i}}</td>
-											<td>{{$item->title}}</td>
-											<td>
-                                                @if($item->status==1)
-                                                <span class="badge light badge-success">Active</span>
-                                                @else
-                                                <span class="badge light badge-danger">Inactive</span>
-                                                @endif
-                                            </td>
-											<td class="text-nowrap">
-												<a href="javascript:void(0);" class="btn btn-warning btn-sm content-icon">
-													<i class="fa fa-edit"></i>
-												</a>
-												<a href="javascript:void(0);" class="btn btn-danger btn-sm content-icon">
-														<i class="fa fa-times"></i>
-												</a>
-											</td>
-										</tr>
-                                        @endforeach
+                <div class="mb-3">
+                    <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#basicModal"
+                        class="btn btn-primary btn-sm">Add Rols</a>
+                </div>
+                <div class="filter cm-content-box box-primary">
+                    <div class="content-title SlideToolHeader">
+                        <div class="cpa">
+                            <i class="fa-solid fa-file-lines me-1"></i>Rols List
+                        </div>
+                    </div>
+                    <div class="cm-content-body form excerpt">
+                        <div class="card-body pb-4">
+                            @if (session('success'))
+                                <div class="alert alert-success">
+                                    {{ session('success') }}
+                                </div>
+                            @endif
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>S.No</th>
+                                            <th>Title</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if ($roles->count() > 0)
+                                            @foreach ($roles as $item)
+                                                <tr>
+                                                    <td>{{ ++$i }}</td>
+                                                    <td>{{ $item->title }}</td>
+                                                    <td>
+                                                        @if ($item->status == 1)
+                                                            <span class="badge light badge-success">Active</span>
+                                                        @else
+                                                            <span class="badge light badge-danger">Inactive</span>
+                                                        @endif
+                                                    </td>
+                                                    <td class="text-nowrap">
+                                                        <a onclick="EditRoles({{ $item->id }})"
+                                                            href="javascript:void(0);"
+                                                            class="btn btn-warning btn-sm content-icon">
+                                                            <i class="fa fa-edit"></i>
+                                                        </a>
+                                                        <a onclick="DeleteData({{ $item->id }})"
+                                                            href="javascript:void(0);"
+                                                            class="btn btn-danger btn-sm content-icon">
+                                                            <i class="fa fa-times"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
                                         @else
                                             <tr>
                                                 <td colspan="4">Data Not Found!</td>
                                             </tr>
                                         @endif
-									</tbody>
-								</table>
-								<div class="d-flex align-items-center justify-content-between flex-wrap">
-									{{-- <p class="mb-2 me-3">Page 1 of 5, showing 2 records out of 8 total, starting on record 1, ending on 2</p> --}}
-									{{ $roles->links() }}
-                                    {{-- <nav aria-label="Page navigation example mb-2">
-										<ul class="pagination mb-2 mb-sm-0">
-										<li class="page-item"><a class="page-link" href="javascript:void(0);"><i class="fa-solid fa-angle-left"></i></a></li>
-										<li class="page-item"><a class="page-link" href="javascript:void(0);">1</a></li>
-										<li class="page-item"><a class="page-link" href="javascript:void(0);">2</a></li>
-										<li class="page-item"><a class="page-link" href="javascript:void(0);">3</a></li>
-										<li class="page-item"><a class="page-link " href="javascript:void(0);"><i class="fa-solid fa-angle-right"></i></a></li>
-										</ul>
-									</nav> --}}
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+                                    </tbody>
+                                </table>
+                                <div class="d-flex align-items-center justify-content-between flex-wrap">
+                                    {{-- <p class="mb-2 me-3">Page 1 of 5, showing 2 records out of 8 total, starting on record 1, ending on 2</p> --}}
+                                    <nav aria-label="Page navigation example mb-2">
+                                        <ul class="pagination mb-2 mb-sm-0">
+                                            <li class="page-item">
+                                                <a class="page-link" href="{{ $roles->previousPageUrl() }}">
+                                                    <i class="fa-solid fa-angle-left"></i>
+                                                </a>
+                                            </li>
+
+                                            <!-- Display each page link -->
+                                            @for ($i = 1; $i <= $roles->lastPage(); $i++)
+                                                <li class="page-item {{ $roles->currentPage() == $i ? 'active' : '' }}">
+                                                    <a class="page-link"
+                                                        href="{{ $roles->url($i) }}">{{ $i }}</a>
+                                                </li>
+                                            @endfor
+
+                                            <li class="page-item">
+                                                <a class="page-link" href="{{ $roles->nextPageUrl() }}">
+                                                    <i class="fa-solid fa-angle-right"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <!--**********************************
-	Content body end
+ Content body end
 ***********************************-->
 <div class="modal fade" id="basicModal">
     <div class="modal-dialog" role="document">
@@ -111,34 +135,93 @@
                     <button id="sendmemessage" type="button" class="btn btn-primary">Save changes</button>
                 </form>
             </div>
-
         </div>
     </div>
 </div>
+
+
+{{-- edit modal --}}
+
+<div class="modal fade" id="editModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Roles</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal">
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="responseMessages"></div>
+                <form id="ajaxupdate" method="post">
+                    @csrf
+                    <input type="hidden" id="id" name="id">
+                    <div class="mb-3">
+                        <label class="form-label">Title</label>
+                        <input type="text" class="form-control" name="title" placeholder="Title" id="title">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+
+                        <select class="default-select  form-control wide" name="status" id="status">
+                            <option value="1">Active</option>
+                            <option value="0">Inactive</option>
+                        </select>
+                    </div>
+                    <button id="updatedata" type="button" class="btn btn-primary">Save changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="DeleteModal" class="modal fade">
+    <div class="modal-dialog modal-confirm">
+        <div class="modal-content">
+            <div class="modal-header flex-column">
+                <div class="icon-box">
+                    <i class="fa fa-times"></i>
+                </div>
+                <h4 class="modal-title w-100">Are you sure?</h4>
+            </div>
+            <div class="modal-body">
+                <p>Do you really want to delete these records? This process cannot be undone.</p>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button onclick="CloseModal()" type="button" class="btn btn-secondary"
+                    data-dismiss="modal">Cancel</button>
+                <form id="deleteForm" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <input type="submit" class="btn btn-danger" value="Delete">
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
 @include('admin.common.footer')
 
 <script>
-    $(document).ready(function () {
-        $('#sendmemessage').on('click', function () {
-            // Serialize the form data
+    $(document).ready(function() {
+        $('#sendmemessage').on('click', function() {
             var formData = $('#ajaxForm').serialize();
-            // Send AJAX request
             $.ajax({
-                url: '{{ url("/admin/roles") }}',
+                url: '{{ url('/admin/roles') }}',
                 type: 'post',
                 data: formData,
-                success: function (response) {
-                    // Display success message
-                    $('#responseMessage').html('<span class="alert alert-success">' + response.message + '</span>');
+                success: function(response) {
+                    $('#responseMessage').html('<span class="alert alert-success">' +
+                        response.message + '</span>');
                     setTimeout(() => {
-                       location.reload();
+                        location.reload();
                     }, 2000);
                 },
-                error: function (xhr) {
-                    // Display error message
+                error: function(xhr) {
                     var response = JSON.parse(xhr.responseText);
                     var errorsHtml = '<div class="alert alert-danger">';
-                    $.each(response.errors, function (key, value) {
+                    $.each(response.errors, function(key, value) {
                         errorsHtml += '<span>' + value + '</span>';
                     });
                     errorsHtml += '</div>';
@@ -146,5 +229,64 @@
                 }
             });
         });
+
+
+        $('#updatedata').on('click', function() {
+            var formData = $('#ajaxupdate').serialize();
+            var id = $("#id").val();
+            $.ajax({
+                url: '{{ url('/admin/roles') }}/' + id,
+                type: 'put',
+                data: formData,
+                success: function(response) {
+                    $('#responseMessages').html('<span class="alert alert-success">' +
+                        response.message + '</span>');
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000);
+                },
+                error: function(xhr) {
+                    var response = JSON.parse(xhr.responseText);
+                    var errorsHtml = '<div class="alert alert-danger">';
+                    $.each(response.errors, function(key, value) {
+                        errorsHtml += '<span>' + value + '</span>';
+                    });
+                    errorsHtml += '</div>';
+                    $('#responseMessages').html(errorsHtml);
+                }
+            });
+        });
     });
+
+    function EditRoles(id) {
+        $.ajax({
+            method: "GET",
+            url: "{{ url('/admin/roles') }}/" + id + "/edit",
+            success: function(res) {
+                if (res.status == true) {
+                    $('#editModal').modal('show');
+                    var data = res.data;
+                    $('#id').val(data.id);
+                    $('#title').val(data.title);
+                    $('#status').val(data.status);
+                } else {
+                    console.error("Server returned an error:", response);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error(xhr.responseText);
+            }
+        });
+    }
+
+    function DeleteData(id) {
+        $("#deleteid").val(id);
+        var url = "{{ url('/admin/roles/') }}" + '/' + id;
+        $('#deleteForm').attr('action', url);
+        $('#DeleteModal').modal('show');
+    }
+
+    function CloseModal() {
+        $('#DeleteModal').modal('hide');
+    }
 </script>

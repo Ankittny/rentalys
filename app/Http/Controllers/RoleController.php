@@ -55,27 +55,34 @@ class RoleController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Role $role)
+    public function edit($id)
     {
-        return view('admin.roles.edit', compact('role'));
+        $roles = Role::select('id','title','status')->where('id',$id)->first();
+        if(!empty($roles)){
+            return response(['status'=>true,'data'=>$roles]);
+        } else {
+            return response(['status'=>false,'data'=>$roles]);
+        }
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Role $role)
+    public function update(Request $request,$id)
     {
-        // Validate the form data
-        $validatedData = $request->validate([
-            'name' => 'required|unique:roles|max:255',
-            // Add more validation rules as needed
-        ]);
-
-        // Update the role instance
-        $role->update($validatedData);
-
-        // Redirect to the index page with success message
-        return redirect()->route('roles.index')->with('success', 'Role updated successfully.');
+        $rules = [
+            'title' => 'required|string|max:255',
+            'status' => 'required|boolean',
+        ];
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json(['status' => false, 'errors' => $validator->errors()], 422);
+        }
+        $data = Role::find($id);
+        $data->title = $request->title;
+        $data->status = $request->status;
+        $data->save();
+        return response()->json(['status'=>true,'message'=>'Record Successfully Update!']);
     }
 
     /**
@@ -83,10 +90,7 @@ class RoleController extends Controller
      */
     public function destroy(Role $role)
     {
-        // Delete the role
         $role->delete();
-
-        // Redirect to the index page with success message
         return redirect()->route('roles.index')->with('success', 'Role deleted successfully.');
     }
 }
